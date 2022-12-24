@@ -1,3 +1,5 @@
+#include "control.hpp"
+
 int nop(cpu* c)
 {
     c->t = 4;
@@ -25,6 +27,8 @@ int jr(cpu* c)
     else if (opcode == 0x38)
         // jump if carry is set
         condition = (c->carry);
+    else
+        return (0);
 
     if (condition)
     {
@@ -56,6 +60,8 @@ int jp(cpu* c)
     else if (opcode == 0xda)
         // jump if carry is set
         condition = (c->carry);
+    else
+        return (0);
 
     if (condition)
     {
@@ -86,6 +92,8 @@ int call(cpu *c)
         condition = (c->carry == 0);
     else if (opcode == 0xdc)
         condition = c->carry;
+    else
+        return (0);
 
     if (condition)
     {
@@ -118,6 +126,8 @@ int push(cpu* c)
         hi = c->d, lo = c->e;
     else if (opcode == 0xe5)
         hi = c->h, lo = c->l;
+    else
+        return (0);
 
     // takes 16 cycles
     c->t = 16;
@@ -151,6 +161,8 @@ int pop(cpu* c)
         c->sp += 2;
         return 1;
     }
+    else
+        return (0);
 
     *lo = c->read(c->sp);
     *hi = c->read(c->sp + 1);
@@ -174,6 +186,8 @@ int ret(cpu* c)
     else if (opcode == 0xd8)
         // return if carry is set
         condition = c->carry;
+    else
+        (void)condition;
 
     if (condition)
     {
@@ -232,6 +246,9 @@ int rst(cpu* c)
         c->pc = 0x30;
     else if (opcode == 0xff)
         c->pc = 0x38;
+    else 
+        return (0);
+    
     return 2;
 }
 

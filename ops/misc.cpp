@@ -1,3 +1,5 @@
+#include "misc.hpp"
+
 int di(cpu* c)
 {
     c->pending_disable = 1;

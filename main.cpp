@@ -2,16 +2,17 @@
 #include <SDL2/SDL.h>
 using namespace std;
 #include "cpu/cpu.hpp"
-#include "cpu/cpu.cpp"
+// #include "cpu/cpu.cpp"
 #include "ops/ops.hpp"
-#include "ops/ops.cpp"
+// #include "ops/ops.cpp"
 #include "gui/gui.hpp"
-#include "gui/gui.cpp"
+// #include "gui/gui.cpp"
 #include "gpu/gpu.hpp"
-#include "gpu/gpu.cpp"
+// #include "gpu/gpu.cpp"
 
-const int fps = 60;
-const int ticks_per_frame = 1000 / 60;
+
+// const int fps = 60;
+// const int ticks_per_frame = 1000 / 60;
 
 // TODO: Get this stuff into a gameboy class maybe
 cpu c;
@@ -23,6 +24,7 @@ int flag = 0;
 inline void execute_instruction() {
     int extended = 0;
     uint16_t opcode = c.read(c.pc);
+    // printf("running form here\n");
     if (flag == 1) {
         printf("opcode = %02x, pc = %04x\n", opcode, c.pc);
     }
@@ -34,8 +36,9 @@ inline void execute_instruction() {
         opcode = c.read(c.pc + 1) + 0xff;
         c.pc += 1;
     }
-
+    // printf("opcode %d\n", opcode);
     int executed = inst_set[opcode].func(&c);
+    // printf("the output: %d\n", executed);
     if (executed == 0)
     {
         if (extended)
@@ -62,7 +65,7 @@ inline void execute_instruction() {
 }
 int fc = 0;
 void emulate() {
-    //int max_cycles = 69905; //  frequency of gameboy / 60
+    // int max_cycles = 69905; //  frequency of gameboy / 60
     int cycles = 0;
     execute_instruction();
     if (c.pending_enable == 1 && c.read(c.pc - 1) != 0xfb)

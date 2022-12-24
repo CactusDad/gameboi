@@ -1,8 +1,12 @@
 // GUI class here
 // will use sdl
+#ifndef __GUI_H__
+#define __GUI_H__
+#include <SDL2/SDL.h>
+#include <iostream>
 
-const int SCREEN_WIDTH = 160;
-const int SCREEN_HEIGHT = 144;
+const int SCREEN_WIDTH = 460;
+const int SCREEN_HEIGHT = 444;
 
 struct gui
 {
@@ -14,3 +18,4 @@ struct gui
     gui();
     void init();
 };
+#endif //__GUI_H__

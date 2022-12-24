@@ -1,3 +1,5 @@
+#include "gpu.hpp"
+
 // This file contains the code for emulating the GPU
 // of the Gameboy
 

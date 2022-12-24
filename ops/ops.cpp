@@ -1,7 +1,5 @@
-#include "load.cpp"
-#include "arithmetic.cpp"
-#include "control.cpp"
-#include "misc.cpp"
+
+#include "ops.hpp"
 
 int  not_imp(cpu* c)
 {
@@ -1040,7 +1038,7 @@ operation inst_set[512] = {
 };
 
 
-operation::operation(string name, int size, int cycles, int (*f)(cpu*))
+operation::operation(std::string name, int size, int cycles, int (*f)(cpu*))
 {
 	this->name = name;
 	this->size = size;

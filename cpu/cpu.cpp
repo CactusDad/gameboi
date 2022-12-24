@@ -1,5 +1,7 @@
+#include "cpu.hpp"
 
-const int clock_speed = 4194304;
+
+// const int clock_speed = 4194304; // unused variable 
 
 cpu::cpu()
 {
@@ -9,7 +11,7 @@ cpu::cpu()
 	fread(bootloader, sizeof(uint8_t), 256, fp);
 	fclose(fp);
 	// Tetris has no banking so we can read it all the way
-	FILE *rom = fopen("Tetris (World).gb", "rb");
+	FILE *rom = fopen("Tetris (World) (Rev A).gb", "rb");
 	fread(memory, sizeof(uint8_t), 32768, rom);
 	fclose(rom);
 	pc = 0x0000;

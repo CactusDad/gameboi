@@ -1,3 +1,6 @@
+#include "load.hpp"
+
+
 // This file contains all the load operations
 
 // Function for all load type operations
@@ -6,7 +9,8 @@ int load_pair(cpu* c)
 {
     // load given register pair with 2 byte immediate value
     uint8_t opcode = c->read(c->pc);
-    uint8_t *hi, *lo;
+    uint8_t *hi = NULL;
+    uint8_t *lo = NULL;
     c->t = 12;
     if (opcode == 0x01)
         hi = &(c->b), lo = &(c->c);
@@ -14,6 +18,11 @@ int load_pair(cpu* c)
         hi = &(c->d), lo = &(c->e);
     else if (opcode == 0x21)
         hi = &(c->h), lo = &(c->l);
+    else
+    {
+        lo = 0;
+        hi = 0;
+    }
 
     *lo = c->read(c->pc + 1);
     *hi = c->read(c->pc + 2);
@@ -35,6 +44,11 @@ int load_sp(cpu* c)
         c->t = 8;
         lo = c->l;
         hi = c->h;
+    }
+    else
+    {
+        lo = 0;
+        hi = 0;
     }
     uint16_t val = hi;
     val = (val << 8) | lo;
@@ -58,6 +72,11 @@ int load_aindirect(cpu* c)
         c->t = 16;
         lo = c->read(c->pc + 1);
         hi = c->read(c->pc + 2);
+    }
+    else
+    {
+        hi = 0;
+        lo = 0;
     }
     uint16_t addr = (hi << 8) | lo;
     c->a = c->read(addr);
@@ -141,6 +160,8 @@ int load_rtoa(cpu* c)
         uint16_t addr = ((uint16_t)(c->h) << 8) | (c->l);
         from = c->memory + addr;
     }
+    else
+        from = 0;
     c->a = *from;
     return 1;
 }
@@ -170,6 +191,8 @@ int load_rtob(cpu* c)
     }
     else if (opcode == 0x47)
         from = &(c->a);
+    else
+        from = 0;
     c->b = *from;
     return 1;
 }
@@ -199,6 +222,8 @@ int load_rtoc(cpu* c)
     }
     else if (opcode == 0x4f)
         from = &(c -> a);
+    else
+        from = 0;
     c->c = *from;
     return 1;
 }
@@ -228,6 +253,8 @@ int load_rtod(cpu* c)
     }
     else if (opcode == 0x57)
         from = &(c -> a);
+    else
+        from = 0;
     c->d = *from;
     return 1;
 }
@@ -257,6 +284,8 @@ int load_rtoe(cpu* c)
     }
     else if (opcode == 0x5f)
         from = &(c -> a);
+    else
+        from = 0;
     c->e = *from;
     return 1;
 }
@@ -286,6 +315,8 @@ int load_rtoh(cpu* c)
     }
     else if (opcode == 0x67)
         from = &(c -> a);
+    else
+        from = 0;
     c->h = *from;
     return 1;
 }
@@ -294,7 +325,7 @@ int load_rtol(cpu* c)
 {
     c->t = 4;
     uint8_t opcode = c->read(c->pc);
-    uint8_t *from;
+    uint8_t *from = NULL;
     if (opcode == 0x68)
         from = &(c->b);
     else if (opcode == 0x69)
@@ -315,6 +346,8 @@ int load_rtol(cpu* c)
     }
     else if (opcode == 0x6F)
         from = &(c -> a);
+    
+       
     c->l = *from;
     return 1;
 }
@@ -343,6 +376,8 @@ int load_rtomem(cpu* c)
     }
     else if (opcode == 0x77)
         from = (c -> a);
+    else
+        from = 0;
     uint16_t addr = (((uint16_t)(c->h)) << 8) |(c -> l);
     c->write(addr, from);
     return 1;
@@ -370,6 +405,11 @@ int load_atomem(cpu* c)
     {
         c->t = 16;
         lo = c->read(c->pc + 1), hi = c->read(c->pc + 2);
+    }
+    else
+    {
+        hi = 0;
+        lo = 0;
     }
 
     // get the address from the high and low bytes.
@@ -401,6 +441,8 @@ int load_memtor(cpu* c)
         reg = &(c->l);
     else if (opcode == 0x3e)
         reg = &(c->a);
+    else
+        reg = 0;
 
     *reg = c->read(c->pc + 1);
     return 1;

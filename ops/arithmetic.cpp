@@ -1,3 +1,5 @@
+#include "arithmetic.hpp"
+
 int cmp(cpu* c)
 {
     uint8_t opcode = c->read(c->pc);
@@ -27,7 +29,8 @@ int cmp(cpu* c)
     {
         n = c->read(c->pc + 1);
         c->t = 8;
-    }
+    }else
+        return (0);
     uint8_t val = c->a - n;
     c->zero = (val == 0);
     c->subtract = 1;
@@ -72,7 +75,8 @@ int xorop(cpu* c)
     {
         c->t = 8;
         data = c->read(c->pc + 1);
-    }
+    }else
+        return (0);
 
     // xor a and data and put it in a
     c->a ^= data;
@@ -112,6 +116,8 @@ int orop(cpu* c)
         c->t = 8;
         data = c->read(c->pc + 1);
     }
+    else
+        return (0);
 
     // or a and data and put it in a
     c->a |= data;
@@ -149,7 +155,8 @@ int bit7(cpu* c)
         c->half_carry = 1;
         c->subtract = 0;
         return 1;
-    }
+    }else
+        return (0);
     c->zero = ((*reg) & (1 << 7)) == 0;
     c->half_carry = 1;
     c->subtract = 0;
@@ -187,6 +194,8 @@ int andop(cpu* c)
         c->t = 8;
         data = c->read(c->pc + 1);
     }
+    else
+        return (0);
 
     // and a and data and put it in a
     c->a &= data;
@@ -226,6 +235,8 @@ int inc(cpu *c)
         uint16_t addr = (((uint16_t)c->h)<<8) | (c->l);
         reg = c->memory + addr;
     }
+    else
+        return (0);
     // now have to increase value in reg by 1
     // if the lower bits are all one, then half carry will be set
     if (((*reg) & 0xf) == 1)
@@ -244,7 +255,8 @@ int inc(cpu *c)
 int inc_pair(cpu* c)
 {
     uint8_t opcode = c->read(c->pc);
-    uint8_t *hi, *lo;
+    uint8_t *hi;
+    uint8_t *lo;
     c->t = 8;
     if (opcode == 0x03)
         // increment the bc pair
@@ -260,6 +272,8 @@ int inc_pair(cpu* c)
         c->sp++;
         return 1;
     }
+    else
+        return (0);
 
     uint16_t val = (((uint16_t)(*hi)) << 8) | (*lo);
     val++;
@@ -271,7 +285,8 @@ int inc_pair(cpu* c)
 int dec_pair(cpu* c)
 {
     uint8_t opcode = c->read(c->pc);
-    uint8_t *hi, *lo;
+    uint8_t *hi;
+    uint8_t *lo;
     c->t = 8;
     if (opcode == 0x0b)
         // decrement the bc pair
@@ -287,6 +302,8 @@ int dec_pair(cpu* c)
         c->sp--;
         return 1;
     }
+    else
+        return (0);
 
     uint16_t val = (((uint16_t)(*hi)) << 8) | (*lo);
     val--;
@@ -320,6 +337,8 @@ int dec(cpu* c)
         uint16_t addr = (((uint16_t)c->h)<<8) | (c->l);
         reg = c->memory + addr;
     }
+    else
+        return (0);
 
     // now have to decrease value in reg by 1
     // if the lower bits are all zero, then half carry will be set
@@ -364,6 +383,8 @@ int rl(cpu* c)
         addr = (addr << 8) | c->l;
         reg = c->memory + addr;
     }
+    else
+        return (0);
 
     int temp = c->carry;
     c->carry = ((*reg) >> 7) & 1;
@@ -404,6 +425,8 @@ int sub(cpu* c)
         data = c->read(c->pc + 1);
         c->t = 8;
     }
+    else
+        return (0);
 
     c->zero = (c->a == data);
     c->subtract = 1;
@@ -444,6 +467,8 @@ int add(cpu* c)
         c->t = 8;
         data = c->read(c->pc);
     }
+    else
+        return (0);
 
     uint16_t val = data; // implicit conversion of data to 16 bits
     val += c->a;
@@ -499,6 +524,8 @@ int swapop(cpu* c)
         c->zero = (val == 0);
         return 1;
     }
+    else
+        return (0);
 
     uint8_t val = (*reg) >> 4;
     val |= ((*reg) << 4);
@@ -511,7 +538,8 @@ int add_pair(cpu* c)
 {
     uint8_t opcode = c->read(c->pc);
     c->t = 8;
-    uint16_t hi, lo;
+    uint16_t hi;
+    uint16_t lo;
     if (opcode == 0x09)
         hi = c->b, lo = c->c;
     else if (opcode == 0x19)
@@ -520,6 +548,8 @@ int add_pair(cpu* c)
         hi = c->h, lo = c->l;
     else if (opcode == 0x39)
         hi = (c->sp) >> 8, lo = (c->sp) & 0xff;
+    else
+        return (0);
 
     uint16_t val = (hi << 8) | lo;
     uint16_t hl = (((uint16_t)(c->h)) << 8) | c->l;
@@ -562,6 +592,8 @@ int res0(cpu* c)
     }
     else if (opcode == 0x87)
         reg = &(c->a);
+    else
+        return (0);
     (*reg) ^= 1;
     return 1;
 }
@@ -601,6 +633,8 @@ int sla(cpu* c)
     }
     else if (opcode == 0x27)
         reg = &(c->a);
+    else
+        return (0);
 
     c->half_carry = c->subtract = 0;
     uint8_t val = (*reg) << 1;
@@ -640,6 +674,8 @@ int bit2(cpu* c)
         c->subtract = 0;
         return 1;
     }
+    else
+        return (0);
     c->zero = ((*reg) & (1 << 2)) == 0;
     c->half_carry = 1;
     c->subtract = 0;
@@ -676,6 +712,8 @@ int bit3(cpu* c)
         c->subtract = 0;
         return 1;
     }
+    else
+        return (0);
     c->zero = ((*reg) & (1 << 3)) == 0;
     c->half_carry = 1;
     c->subtract = 0;
@@ -712,6 +750,8 @@ int bit4(cpu* c)
         c->subtract = 0;
         return 1;
     }
+    else
+        return (0);
     c->zero = ((*reg) & (1 << 4)) == 0;
     c->half_carry = 1;
     c->subtract = 0;
@@ -748,6 +788,8 @@ int bit5(cpu* c)
         c->subtract = 0;
         return 1;
     }
+    else
+        return (0);
     c->zero = ((*reg) & (1 << 5)) == 0;
     c->half_carry = 1;
     c->subtract = 0;
@@ -784,6 +826,8 @@ int bit6(cpu* c)
         c->subtract = 0;
         return 1;
     }
+    else
+        return (0);
     c->zero = ((*reg) & (1 << 6)) == 0;
     c->half_carry = 1;
     c->subtract = 0;
@@ -820,6 +864,8 @@ int bit0(cpu* c)
         c->subtract = 0;
         return 1;
     }
+    else
+        return (0);
     c->zero = ((*reg) & 1) == 0;
     c->half_carry = 1;
     c->subtract = 0;
@@ -856,6 +902,8 @@ int bit1(cpu* c)
         c->subtract = 0;
         return 1;
     }
+    else
+        return (0);
     c->zero = ((*reg) & (1 << 1)) == 0;
     c->half_carry = 1;
     c->subtract = 0;
@@ -898,6 +946,8 @@ int srl(cpu* c)
     }
     else if (opcode == 0x3f)
         reg = &(c->a);
+    else
+        return (0);
 
     c->half_carry = c->subtract = 0;
     uint8_t val = (*reg) >> 1;

@@ -1,3 +1,9 @@
+#ifndef __GPU_H__
+#define __GPU_H__
+#include <iostream>
+#include "../cpu/cpu.hpp"
+#include "../gui/gui.hpp"
+
 struct gpu
 {
     // values in the pixels
@@ -48,3 +54,4 @@ struct gpu
     int getcolor(int, uint16_t);
     int cnt;
 };
+#endif // __GPU_H__

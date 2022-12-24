@@ -1,3 +1,4 @@
+#include "gui.hpp"
 
 gui::gui()
 {

@@ -1,3 +1,10 @@
+
+#ifndef __CPU_H__
+#define __CPU_H__
+#include <cstdio>
+#include <cstring>
+#include <iostream>
+
 struct cpu
 {
 	uint8_t a; // accumulator
@@ -61,7 +68,7 @@ struct cpu
 	void status();
 	void memory_dump(char*, uint16_t, uint16_t);
 };
-
+#endif // __CPU_H__
 /*
 0x0000-0x3FFF: Permanent ROM Bank
 0x4000-0x7FFF: Area for switchable ROM banks.
